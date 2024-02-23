@@ -1,0 +1,21 @@
+server:
+  port: ${APPLICATION_PORT:8080}
+
+spring:
+  datasource:
+    username: ${POSTGRES_USERNAME:postgres}
+    password: ${POSTGRES_PASSWORD:postgres}
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/phone_store_app_db}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+
+logging:
+  level:
+    ru.barikhashvili: info
+  pattern:
+    console: "%d %highlight(%5level) %clr(${PID}){magenta} --- [%17.17t] %clr(%-40logger{36}){cyan} :: %clr(%-30.30method){yellow} : %msg%n"
+    file: "%d %5p ${PID} --- [%t] %-60c{1.} : %m%n"
+  file:
+    name: ./logs/phone-store-app.log
