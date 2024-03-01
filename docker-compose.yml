@@ -1,0 +1,32 @@
+volumes:
+  phone_store_pg_data:
+
+services:
+  phone-service:
+    image: phone-service-image
+    build: .
+    environment:
+      - POSTGRES_USERNAME=${POSTGRES_USERNAME:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - APPLICATION_PORT=${APPLICATION_PORT:-8080}
+      - POSTGRES_URL=${POSTGRES_URL:-jdbc:postgresql://postgres:5432/phone_store_app_db}
+    container_name: phone-service
+    ports:
+      - "8080:${APPLICATION_PORT:-8080}"
+    restart: unless-stopped
+  database:
+    image: postgres:15.6-alpine
+    container_name: phone-store-app-db
+    expose:
+      - "5432"
+    ports:
+      - "5432:5432"
+    hostname: postgres
+    environment:
+      - POSTGRES_USER=${POSTGRES_USERNAME:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=phone_store_app_db
+    volumes:
+      - phone_store_pg_data:/var/lib/postgresql/data
+      - ./src/main/resources/schema.sql:/docker-entrypoint-initdb.d/initdb.sql
+    restart: unless-stopped
